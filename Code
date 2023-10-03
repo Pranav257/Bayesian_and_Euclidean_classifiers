@@ -1,0 +1,54 @@
+% Define the number of data points
+N = 1000;
+
+% Define mean vectors for three classes
+m = [1 4 8; 1 4 1];
+
+% Define covariance matrices for the three classes
+Si = [];
+for i = 1:3
+    Si(:,:,i) = [2 0; 0 2];
+end
+
+% Generate X5 with equiprobable classes
+P1 = [1/3, 1/3, 1/3];
+[X5, y1] = generate_gauss_classes(m, Si, P1, N);
+
+% Generate X5_prime with different class probabilities
+P2 = [0.8, 0.1, 0.1];
+[X5_prime, y2] = generate_gauss_classes(m, Si, P2, N);
+
+% Apply Bayesian and Euclidean classifiers to X5
+bayes_X5 = bayes_classifier(m, Si, P1, X5);
+euclid_X5 = euclidean_classifier(m, X5);
+
+% Apply Bayesian and Euclidean classifiers to X5_prime
+bayes_X5_prime = bayes_classifier(m, Si, P2, X5_prime);
+euclid_X5_prime = euclidean_classifier(m, X5_prime);
+
+% Compute classification errors for Bayesian and Euclidean classifiers on X5
+X5_bayes_error = compute_error(bayes_X5, y1);
+X5_euclid_error = compute_error(euclid_X5, y1);
+
+% Compute classification errors for Bayesian and Euclidean classifiers on X5_prime
+X5_prime_bayes_error = compute_error(bayes_X5_prime, y2);
+X5_prime_euclid_error = compute_error(euclid_X5_prime, y2);
+
+% Display classification errors
+fprintf('Classification Error for X5 using Bayesian Classifier: %.2f%%\n', X5_bayes_error * 100);
+fprintf('Classification Error for X5 using Euclidean Classifier: %.2f%%\n', X5_euclid_error * 100);
+fprintf('Classification Error for X5_prime using Bayesian Classifier: %.2f%%\n', X5_prime_bayes_error * 100);
+fprintf('Classification Error for X5_prime using Euclidean Classifier: %.2f%%\n', X5_prime_euclid_error * 100);
+
+% Drawing conclusions
+if X5_bayes_error < X5_euclid_error
+    fprintf('The Bayesian classifier performs better on X5.\n');
+else
+    fprintf('The Euclidean classifier performs better on X5.\n');
+end
+
+if X5_prime_bayes_error < X5_prime_euclid_error
+    fprintf('The Bayesian classifier performs better on X5_prime.\n');
+else
+    fprintf('The Euclidean classifier performs better on X5_prime.\n');
+end
